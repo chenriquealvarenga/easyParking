@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Vaga;
 
 class VagaController extends Controller
 {
@@ -15,7 +16,10 @@ class VagaController extends Controller
      */
     public function index()
     {
-        //
+       
+        $vagas = Vaga::all();
+
+        return view('vagas.index')->withVagas($vagas);
     }
 
     /**
@@ -25,7 +29,7 @@ class VagaController extends Controller
      */
     public function create()
     {
-        //
+        return view('vagas.create');
     }
 
     /**
@@ -37,6 +41,25 @@ class VagaController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, array(
+            'codigo' => 'required|max:10|unique:vagas',
+            'area' => 'required',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'status' => 'required',
+        ));
+
+        $vaga = new Vaga;
+
+        $vaga->codigo = $request->codigo;
+        $vaga->area = $request->area;
+        $vaga->latitude = $request->latitude;
+        $vaga->longitude = $request->longitude;
+        $vaga->status = $request->status;
+
+        $vaga->save();
+
+        return redirect()->route('vagas.index');
     }
 
     /**
@@ -47,7 +70,7 @@ class VagaController extends Controller
      */
     public function show($id)
     {
-        //
+
     }
 
     /**
@@ -58,7 +81,9 @@ class VagaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $vaga = Vaga::find($id);
+        
+        return view('vagas.edit')->with($vaga);
     }
 
     /**
