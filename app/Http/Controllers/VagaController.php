@@ -123,11 +123,15 @@ class VagaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  string  $codigo
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($codigo)
     {
         //
+        $vaga = Vaga::find($codigo);
+
+        $vaga->delete();
+        return redirect()->route('vagas.index');
     }
 }

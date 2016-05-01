@@ -5,11 +5,10 @@
     <table class="table">
 	    <thead>
 	        <tr>
-	            <th>Código</th>
-	            <th>Área</th>
-	            <th>Latitude</th>
-	            <th>Longitude</th>
-	            <th>Status</th>
+	            <th>Código</th>	            
+	            <th>visualizar</th>
+	            <th>editar</th>
+	            <th>deletar</th>
 	        </tr>
 	    </thead>
 	    <tbody>
@@ -17,10 +16,16 @@
 		    		{{-- expr --}}
 				<tr>
 		            <td>{{ $vaga->codigo }}</td>
-		            <td>{{ $vaga->area }}</td>
-		            <td>{{ $vaga->latitude }}</td>
-		            <td>{{ $vaga->longitude }}</td>
-		            <td>{{ $vaga->status }}</td>
+		            <td><a href="{{ url('/vagas') }}/{{ $vaga->codigo }}" class="btn btn-info" role="button">ver</a></td>
+		            <td><a href="{{ url('/vagas') }}/{{ $vaga->codigo }}/edit" class="btn btn-info" role="button">Editar</a></td>
+		            <td>
+		            	<form class="form-horizontal" role="form" method="POST" action="{{ url('/vagas') }}/{{$vaga->codigo}}">	{!! csrf_field() !!}
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-delete">
+                      <i class="fa fa-btn "></i>Deletar
+                    </button>   
+                  </form>
+                </td>		            
 		        </tr>
 	    	@endforeach	        	        
 	    </tbody>
