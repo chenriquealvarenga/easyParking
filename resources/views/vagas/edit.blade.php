@@ -8,7 +8,7 @@
                 <div class="panel-heading">Criar Vaga</div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/vagas') }}/{{$vaga->codigo}}">	{!! csrf_field() !!}
-
+                        <input type="hidden" name="_method" value="PUT">
                         <div class="form-group{{ $errors->has('codigo') ? ' has-error' : '' }}">
                             <label class="col-md-4 control-label">Código</label>
 

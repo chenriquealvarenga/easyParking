@@ -70,7 +70,8 @@ class VagaController extends Controller
      */
     public function show($codigo)
     {   
-        $vaga = Vaga::where('codigo', $codigo)->first();//Vaga::find($codigo);
+        //$vaga = Vaga::where('codigo', $codigo)->first();
+        $vaga = Vaga::find($codigo);
         return view("vagas.show")->withVaga($vaga);
     }
 
@@ -94,9 +95,29 @@ class VagaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $codigo)
     {
         //
+        $this->validate($request, array(
+            'codigo' => 'required|max:10|unique:vagas',
+            'area' => 'required',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'status' => 'required',
+        ));
+
+        $vaga = Vaga::find($codigo);
+
+        $vaga->codigo = $request->codigo;
+        $vaga->area = $request->area;
+        $vaga->latitude = $request->latitude;
+        $vaga->longitude = $request->longitude;
+        $vaga->status = $request->status;
+
+        $vaga->save();
+
+        //Session::flash('success','teste flash!');
+        return redirect()->route('vagas.show', $vaga->codigo);
     }
 
     /**
