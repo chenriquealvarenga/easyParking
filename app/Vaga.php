@@ -12,5 +12,16 @@ class Vaga extends Model
      * @var string
      */
     protected $primaryKey = 'codigo';
+    public $incrementing = false;
     
+
+    /**
+	 * Get the route key for the model.
+	 *
+	 * @return string
+	 */
+	public function getRouteKeyName()
+	{
+	    return 'codigo';
+	}
 }

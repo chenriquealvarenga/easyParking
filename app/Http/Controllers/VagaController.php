@@ -65,12 +65,13 @@ class VagaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $codigo
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-
+    public function show($codigo)
+    {   
+        $vaga = Vaga::where('codigo', $codigo)->first();//Vaga::find($codigo);
+        return view("vagas.show")->withVaga($vaga);
     }
 
     /**
@@ -79,11 +80,11 @@ class VagaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($codigo)
     {
-        $vaga = Vaga::find($id);
-        
-        return view('vagas.edit')->with($vaga);
+        $vaga = Vaga::find($codigo);
+
+        return view('vagas.edit')->withVaga($vaga);
     }
 
     /**
