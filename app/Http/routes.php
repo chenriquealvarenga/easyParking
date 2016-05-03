@@ -16,7 +16,10 @@ Route::get('/', function () {
 });
 
 Route::auth();
-
 Route::get('/home', 'HomeController@index');
 
-Route::resource('vagas', 'VagaController');
+Route::group(['middleware' => ['auth']], function (){		
+	Route::resource('vagas', 'VagaController');
+});
+
+//Route::resource('usuarios', 'UsuarioController');
