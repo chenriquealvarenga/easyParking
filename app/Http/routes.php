@@ -19,7 +19,9 @@ Route::auth();
 Route::get('/home', 'HomeController@index');
 
 Route::group(['middleware' => ['auth']], function (){		
-	Route::resource('vagas', 'VagaController');
+	
 });
+Route::resource('vagas', 'VagaController');
+Route::resource('violacaos', 'ViolacaoController');
 
 //Route::resource('usuarios', 'UsuarioController');
