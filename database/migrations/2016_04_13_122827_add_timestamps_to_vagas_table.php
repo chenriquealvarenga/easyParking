@@ -25,7 +25,7 @@ class AddTimestampsToVagasTable extends Migration
     public function down()
     {
         Schema::table('vagas', function (Blueprint $table) {
-            //
+            $table->dropTimestamps();
         });
     }
 }
