@@ -21,7 +21,14 @@ class UsuarioController extends Controller
      */
     public function index()
     {
-        //
+        //$funcionarios = Funcionario::all();
+        $usuarios = User::all();
+        //dd($usuarios);
+        //$gerentes = Gerente::all();
+        //$alunos = Aluno::all();
+        //$vigias = Vigia::all();        
+        //return view('usuarios.index')->withFuncionarios($funcionarios)->withAlunos($alunos)->withVigias($vigias)->withGerentes($gerentes);
+        return view('usuarios.index')->withUsuarios($usuarios);
     }
 
     /**
@@ -42,26 +49,83 @@ class UsuarioController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $this->validate($request, array(
-            'codigo' => 'required|max:10|unique:vagas',
-            'area' => 'required',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'status' => 'required',
-        ));
+        
 
-        $vaga = new Vaga;
+        switch ($request->tipo_usuario) {
+            case "aluno":
+                $this->validate($request, array(
+                    'name' => 'required|max:255',
+                    'email' => 'required|email|max:255|unique:users',
+                    'password' => 'required|min:6|confirmed',
+                    'matricula' => 'required|unique:alunos',
+                    'cnh' => 'required|unique:alunos',
+                    'placa_veiculo' => 'required'
+                ));
+                $aluno = new Aluno;
 
-        $vaga->codigo = $request->codigo;
-        $vaga->area = $request->area;
-        $vaga->latitude = $request->latitude;
-        $vaga->longitude = $request->longitude;
-        $vaga->status = $request->status;
+                $aluno->matricula = $request->matricula;
+                $aluno->cnh = $request->cnh;
+                $aluno->placa_veiculo = $request->placa_veiculo;
+                $aluno->save();
 
-        $vaga->save();
+                $userable_id = $aluno->id;
+                $userable_type = "Aluno";
+                break;
 
-        return redirect()->route('vagas.index');
+            case "gerente":
+                $this->validate($request, array(
+                    'name' => 'required|max:255',
+                    'email' => 'required|email|max:255|unique:users',
+                    'password' => 'required|min:6|confirmed'
+                ));
+                $gerente = new Gerente;
+                $gerente->save();
+
+                $userable_id = $gerente->id;
+                $userable_type = "Gerente";
+                break;
+            case "funcionario":
+                $this->validate($request, array(
+                    'name' => 'required|max:255',
+                    'email' => 'required|email|max:255|unique:users',
+                    'password' => 'required|min:6|confirmed',
+                    'cargo' => 'required',
+                    'cnh' => 'required|unique:funcionarios',
+                    'placa_veiculo' => 'required'
+                ));
+                $funcionario = new Funcionario;
+
+                $funcionario->cargo = $request->cargo;
+                $funcionario->cnh = $request->cnh;
+                $funcionario->placa_veiculo = $request->placa_veiculo;
+                $funcionario->save();
+                $userable_id = $funcionario->id;
+                $userable_type = "Funcionario";
+                break;
+            case "vigia":
+                $this->validate($request, array(
+                    'name' => 'required|max:255',
+                    'email' => 'required|email|max:255|unique:users',
+                    'password' => 'required|min:6|confirmed'
+                ));
+                $vigia = new Vigia;
+                $vigia->save();
+                $userable_id = $vigia->id;
+                $userable_type = "Vigia";
+                break;           
+        }
+        
+
+        $user = new User;
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->userable_id = $userable_id;
+        $user->userable_type = $userable_type;
+        $user->save();
+
+        return redirect()->route('usuarios.index');
     }
 
     /**
@@ -72,7 +136,9 @@ class UsuarioController extends Controller
      */
     public function show($id)
     {
-        //
+        
+        $user = User::find($codigo);
+        return view("vagas.show")->withUsuario($user);
     }
 
     /**
