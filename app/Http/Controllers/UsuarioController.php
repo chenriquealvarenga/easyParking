@@ -176,7 +176,33 @@ class UsuarioController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+
+        switch ($user->userable_type) {
+            case 'Aluno':
+                $aluno = Aluno::find($user->userable_id);
+                return view("usuarios.edit")->withUsuario($user)->withAluno($aluno);
+                break;
+            case 'Funcionario':
+                $funcionario = Funcionario::find($user->userable_id);
+                return view("usuarios.edit")->withUsuario($user)->withFuncionario($funcionario);
+                break;
+            case 'Vigia':
+                $vigia = Vigia::find($user->userable_id);
+                return view("usuarios.edit")->withUsuario($user)->withVigia($vigia);
+                break;
+            case 'Gerente':
+                $gerente = Gerente::find($user->userable_id);
+                return view("usuarios.edit")->withUsuario($user)->withGerente($gerente);
+                break;
+            default:                
+                break;
+        }
+
+
+
+
+        return view("usuarios.edit")->withUsuario($user);
     }
 
     /**
@@ -188,7 +214,69 @@ class UsuarioController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+
+        switch ($user->userable_type) {
+            case "Aluno":
+                $this->validate($request, array(
+                    'name' => 'required|max:255',
+                    'email' => 'required|email|max:255|unique:users,email,'.$id,                    
+                    'matricula' => 'required|unique:alunos,matricula,'.$user->userable_id,
+                    'cnh' => 'required|unique:alunos,cnh,'.$user->userable_id,
+                    'rg' => 'required|unique:users,rg,'.$id,
+                    'placa_veiculo' => 'required'
+                ));
+                $aluno = Aluno::find($user->userable_id);
+
+                $aluno->matricula = $request->matricula;
+                $aluno->cnh = $request->cnh;
+                $aluno->placa_veiculo = $request->placa_veiculo;
+                $aluno->save();         
+                
+                break;
+
+            case "Gerente":
+                $this->validate($request, array(
+                    'name' => 'required|max:255',
+                    'email' => 'required|email|max:255|unique:users,email,'.$id,
+                    'rg' => 'required|unique:users,rg,'.$id                  
+                ));
+                $gerente = Gerente::find($user->userable_id);
+                $gerente->save();
+
+                break;
+            case "Funcionario":
+                $this->validate($request, array(
+                    'name' => 'required|max:255',
+                    'email' => 'required|email|max:255|unique:users,email,'.$id, 
+                    'rg' => 'required|unique:users,rg,'.$id,                  
+                    'cargo' => 'required',
+                    'cnh' => 'required|unique:funcionarios,cnh,'.$user->userable_id,
+                    'placa_veiculo' => 'required'
+                ));
+                $funcionario = Funcionario::find($user->userable_id);
+                $funcionario->cargo = $request->cargo;
+                $funcionario->cnh = $request->cnh;
+                $funcionario->placa_veiculo = $request->placa_veiculo;
+                $funcionario->save();
+                break;
+            case "Vigia":
+                $this->validate($request, array(
+                    'name' => 'required|max:255',
+                    'email' => 'required|email|max:255|unique:users,email,'.$id,
+                    'rg' => 'required|unique:users,rg,'.$id 
+                ));
+                $vigia = Vigia::find($user->userable_id);
+                $vigia->save();
+                break;           
+        }
+        
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->rg = $request->rg;
+        $user->save();
+
+        return redirect()->route('usuarios.index');
     }
 
     /**

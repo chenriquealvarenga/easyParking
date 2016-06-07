@@ -99,7 +99,7 @@ class VagaController extends Controller
     {
         //
         $this->validate($request, array(
-            'codigo' => 'required|max:10',
+            'codigo' => 'required|max:10|unique:vagas,codigo,'.$codigo,
             'area' => 'required',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
