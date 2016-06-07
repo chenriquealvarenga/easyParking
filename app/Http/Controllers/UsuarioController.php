@@ -59,6 +59,7 @@ class UsuarioController extends Controller
                     'password' => 'required|min:6|confirmed',
                     'matricula' => 'required|unique:alunos',
                     'cnh' => 'required|unique:alunos',
+                    'rg' => 'required|unique:users',
                     'placa_veiculo' => 'required'
                 ));
                 $aluno = new Aluno;
@@ -120,6 +121,7 @@ class UsuarioController extends Controller
 
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->rg = $request->rg;
         $user->password = $request->password;
         $user->userable_id = $userable_id;
         $user->userable_type = $userable_type;
@@ -137,8 +139,33 @@ class UsuarioController extends Controller
     public function show($id)
     {
         
-        $user = User::find($codigo);
-        return view("vagas.show")->withUsuario($user);
+        $user = User::find($id);
+
+        switch ($user->userable_type) {
+            case 'Aluno':
+                $aluno = Aluno::find($user->userable_id);
+                return view("usuarios.show")->withUsuario($user)->withAluno($aluno);
+                break;
+            case 'Funcionario':
+                $funcionario = Funcionario::find($user->userable_id);
+                return view("usuarios.show")->withUsuario($user)->withFuncionario($funcionario);
+                break;
+            case 'Vigia':
+                $vigia = Vigia::find($user->userable_id);
+                return view("usuarios.show")->withUsuario($user)->withVigia($vigia);
+                break;
+            case 'Gerente':
+                $gerente = Gerente::find($user->userable_id);
+                return view("usuarios.show")->withUsuario($user)->withGerente($gerente);
+                break;
+            default:                
+                break;
+        }
+
+
+
+
+        return view("usuarios.show")->withUsuario($user);
     }
 
     /**
@@ -171,7 +198,29 @@ class UsuarioController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        //
+    {        
+        $user = User::find($id);
+        switch ($user->userable_type) {
+            case 'Aluno':
+                $aluno = Aluno::find($user->userable_id);
+                $aluno->delete();
+                break;
+            case 'Funcionario':
+                $funcionario = Funcionario::find($user->userable_id);
+                $funcionario->delete();
+                break;
+            case 'Vigia':
+                $vigia = Vigia::find($user->userable_id);
+                $vigia->delete();
+                break;
+            case 'Gerente':
+                $gerente = Gerente::find($user->userable_id);
+                $gerente->delete();
+                break;
+            default:                
+                break;
+        }
+        $user->delete();
+        return redirect()->route('usuarios.index');
     }
 }
