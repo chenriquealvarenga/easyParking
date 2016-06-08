@@ -122,7 +122,7 @@ class UsuarioController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->rg = $request->rg;
-        $user->password = $request->password;
+        $user->password = bcrypt($request->password);
         $user->userable_id = $userable_id;
         $user->userable_type = $userable_type;
         $user->save();
