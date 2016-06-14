@@ -9,6 +9,8 @@ use App\Multa;
 use App\Violacao;
 use App\Aluno;
 use App\Funcionario;
+use App\User;
+use App\Vigia;
 
 class MultaController extends Controller
 {
@@ -21,7 +23,6 @@ class MultaController extends Controller
     {
        
         $multas = Multa::all();
-
         return view('multas.index')->withMultas($multas);
     }
 
@@ -33,10 +34,7 @@ class MultaController extends Controller
     public function create()
     {
     	$violacaos = Violacao::all();
-    	$alunos = Aluno::all();
-    	$funcionarios = Funcionario::all();
-        return view('multas.create')->withViolacaos($violacaos)->withAlunos($alunos)
-        							->withFuncionarios($funcionarios);
+        return view('multas.create')->withViolacaos($violacaos);
     }
 
     /**
@@ -52,12 +50,11 @@ class MultaController extends Controller
             'vigia' => 'required',
             'usuario' => 'required',
             'violacao' => 'required',
-            // 'datafim' => 'required'
         ));
 
         $multa = new Multa;
         $multa->vigia = $request->vigia;
-        $multa->usuario = $request->usuario;
+        $placa = $request->usuario;
         $multa->violacao = $request->violacao;
         $multa->datainicio = date("Y/m/d");
 
@@ -65,17 +62,28 @@ class MultaController extends Controller
 
         $multa->datafim = $this->addDayswithdate($multa->datainicio,$violacaoChosen->peso);  
 
-        if(!Funcionario::find($multa->usuario) && !Aluno::find($multa->usuario))
+        $func = Funcionario::where('placa_veiculo',$placa)->get()->first();
+        $aluno = Aluno::where('placa_veiculo',$placa)->get()->first();
+        if(!($func == null && $aluno == null))
         {
-
+            if($func != null)
+            {
+                $userable_id = $func->id;
+                $userable_type = 'Funcionario';
+            }
+            else
+            {
+                $userable_id = $aluno->id;
+                $userable_type = 'Aluno';
+            }
+            $user = User::where('userable_id',$userable_id)->where('userable_type',$userable_type)->get()->first();
+            $multa->usuario = $user->id;
+            $multa->save();
+            return redirect()->route('multas.index');
         }
-        else
-        {
-        	$multa->save();
-
-        	return redirect()->route('multas.index');
+        else{
+            return redirect()->route('multas.create')->withErrors(['Placa não encontrada', '']);;
         }
-        
     }
 
     public function addDayswithdate($date,$days){
@@ -94,7 +102,10 @@ class MultaController extends Controller
     public function show($id)
     {   
         $multa = Multa::find($id);
-        return view("multas.show")->withMulta($multa);
+        $user = User::find($multa->usuario);
+        $violacao = Violacao::find($multa->violacao);
+        $vigia = User::find($multa->vigia);
+        return view("multas.show")->withMulta($multa)->withUser($user)->withViolacao($violacao)->withVigia($vigia);
     }
 
     /**
@@ -130,7 +141,6 @@ class MultaController extends Controller
     {
         //
         $multa = Multa::find($id);
-
         $multa->delete();
         return redirect()->route('multas.index');
     }

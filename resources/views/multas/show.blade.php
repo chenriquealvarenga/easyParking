@@ -5,9 +5,8 @@
     <table class="table">
 	    <thead>
         <tr>
-          <th>Id</th>
           <th>Vigia</th>
-          <th>Usuário</th>
+          <th>Usuario</th>
           <th>Violação</th>
           <th>Data de início</th>
           <th>Data de término</th>
@@ -17,10 +16,9 @@
 	    	
 		    		{{-- expr --}}
 				<tr>
-          <td>{{ $multa->id }}</td>
-          <td>{{ $multa->vigia }}</td>
-          <td>{{ $multa->usuario }}</td>
-          <td>{{ $multa->violacao }}</td>
+          <td>{{ $vigia->name }}</td>
+          <td>{{ $user->name }}</td>
+          <td>{{ $violacao->descricao }}</td>
           <td>{{ $multa->datainicio }}</td>
           <td>{{ $multa->datafim }}</td>
         </tr>

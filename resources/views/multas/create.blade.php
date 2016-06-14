@@ -12,7 +12,6 @@
 
                         <input type="hidden" name="vigia" value="{{ Auth::user()->id }}">
 
-
 						<div class="form-group{{ $errors->has('usuario') ? ' has-error' : '' }}">
                             <label class="col-md-4 control-label">Placa do veículo</label>
 
@@ -24,12 +23,21 @@
                                     <input type="checkbox" class="form-control" name="usuario" value="{{ $aluno->id }}">{{ $aluno->placa_veiculo }}<br>
                                 @endforeach -->
 
-
+                                
                                 @if ($errors->has('usuario'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('usuario') }}</strong>
                                     </span>
+                                @elseif($errors->any())
+                                    <span class="help-block">
+                                        <strong>{{$errors->first()}}</strong>
+                                    </span>
                                 @endif
+                                <!-- @if ($errors->any)
+                                    <span class="help-block">
+                                        <strong>{{ 'Eroooo' }}</strong>
+                                    </span>
+                                @endif -->
                             </div>
                         </div>
 
