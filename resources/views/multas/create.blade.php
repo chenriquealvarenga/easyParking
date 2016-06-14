@@ -18,12 +18,6 @@
                             <div class="col-md-6">
                                 <input type="text" class="form-control" name="usuario" value="{{ old('usuario') }}"></textarea>
                                 
-                                <!-- @foreach ($alunos as $aluno)
-                                    
-                                    <input type="checkbox" class="form-control" name="usuario" value="{{ $aluno->id }}">{{ $aluno->placa_veiculo }}<br>
-                                @endforeach -->
-
-                                
                                 @if ($errors->has('usuario'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('usuario') }}</strong>
@@ -33,11 +27,7 @@
                                         <strong>{{$errors->first()}}</strong>
                                     </span>
                                 @endif
-                                <!-- @if ($errors->any)
-                                    <span class="help-block">
-                                        <strong>{{ 'Eroooo' }}</strong>
-                                    </span>
-                                @endif -->
+                              
                             </div>
                         </div>
 
@@ -58,35 +48,6 @@
                                 @endif
                             </div>
                         </div>
-
-                        <!-- <div class="form-group{{ $errors->has('datainicio') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">Data de início</label>
-
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="datainicio" value="{{ date("d/m/Y") }}"></textarea>
-
-                                @if ($errors->has('datainicio'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('datainicio') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div> -->
-
-                        <!-- <div class="form-group{{ $errors->has('datafim') ? ' has-error' : '' }}">
-                            <label class="col-md-4 control-label">Data de término</label>
-
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" name="datafim" value="{{ old('datafim') }}"></textarea>
-
-                                @if ($errors->has('datafim'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('datafim') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div> -->
-
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
