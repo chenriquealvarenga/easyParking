@@ -48,6 +48,30 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/home') }}">Home</a></li>
+                    <?php
+                        if (!Auth::guest()) {
+                            $user = Auth::user();
+                            //dd($user);
+                            switch ($user->userable_type) {
+                                case 'Funcionario':
+                                case 'Aluno':
+                                    //echo '<li><a href="{{ url('/vagas') }}">Vagas</a></li>'
+                                    break;
+                                case 'Gerente':
+                                    echo '<li><a href="'.url('/vagas').'">Vagas</a></li>';
+                                    echo '<li><a href="'. url('/violacaos').'">Violações</a></li>';
+                                    echo '<li><a href="'.url('/usuarios').'">Usuários</a></li>';
+                                    break;
+                                case 'Vigia':
+                                    echo '<li><a href="'.url('/multas').'">Multas</a></li>';
+                                    break;
+                                default:
+                                    # code...
+                                    break;
+                            }    
+                        }
+                        
+                    ?>
                 </ul>
 
                 <!-- Right Side Of Navbar -->

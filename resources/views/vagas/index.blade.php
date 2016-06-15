@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container">
+		<a href="{{ url('/vagas') }}/create" class="btn btn-info" role="button">Criar</a>
     <table class="table">
 	    <thead>
 	        <tr>
