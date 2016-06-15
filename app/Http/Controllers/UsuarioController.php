@@ -57,8 +57,8 @@ class UsuarioController extends Controller
                     'name' => 'required|max:255',
                     'email' => 'required|email|max:255|unique:users',
                     'password' => 'required|min:6|confirmed',
-                    'matricula' => 'required|unique:alunos',
-                    'cnh' => 'required|unique:alunos',
+                    'matricula' => 'required|integer|unique:alunos',
+                    'cnh' => 'required|integer|unique:alunos',
                     'rg' => 'required|unique:users',
                     'placa_veiculo' => 'required'
                 ));
@@ -91,9 +91,11 @@ class UsuarioController extends Controller
                     'email' => 'required|email|max:255|unique:users',
                     'password' => 'required|min:6|confirmed',
                     'cargo' => 'required',
-                    'cnh' => 'required|unique:funcionarios',
+                    'cnh' => 'required|integer|unique:funcionarios',
                     'placa_veiculo' => 'required'
                 ));
+
+
                 $funcionario = new Funcionario;
 
                 $funcionario->cargo = $request->cargo;
@@ -215,14 +217,17 @@ class UsuarioController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
-
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->rg = $request->rg;
+        $user->save();
         switch ($user->userable_type) {
             case "Aluno":
                 $this->validate($request, array(
                     'name' => 'required|max:255',
                     'email' => 'required|email|max:255|unique:users,email,'.$id,                    
-                    'matricula' => 'required|unique:alunos,matricula,'.$user->userable_id,
-                    'cnh' => 'required|unique:alunos,cnh,'.$user->userable_id,
+                    'matricula' => 'required|integer|unique:alunos,matricula,'.$user->userable_id,
+                    'cnh' => 'required|integer|unique:alunos,cnh,'.$user->userable_id,
                     'rg' => 'required|unique:users,rg,'.$id,
                     'placa_veiculo' => 'required'
                 ));
@@ -246,19 +251,21 @@ class UsuarioController extends Controller
 
                 break;
             case "Funcionario":
+
                 $this->validate($request, array(
                     'name' => 'required|max:255',
                     'email' => 'required|email|max:255|unique:users,email,'.$id, 
                     'rg' => 'required|unique:users,rg,'.$id,                  
                     'cargo' => 'required',
-                    'cnh' => 'required|unique:funcionarios,cnh,'.$user->userable_id,
+                    'cnh' => 'required|integer|unique:funcionarios,cnh,'.$user->userable_id,
                     'placa_veiculo' => 'required'
                 ));
                 $funcionario = Funcionario::find($user->userable_id);
                 $funcionario->cargo = $request->cargo;
                 $funcionario->cnh = $request->cnh;
-                $funcionario->placa_veiculo = $request->placa_veiculo;
+                $funcionario->placa_veiculo = $request->placa_veiculo;                
                 $funcionario->save();
+
                 break;
             case "Vigia":
                 $this->validate($request, array(
@@ -271,10 +278,7 @@ class UsuarioController extends Controller
                 break;           
         }
         
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->rg = $request->rg;
-        $user->save();
+        
 
         return redirect()->route('usuarios.index');
     }
